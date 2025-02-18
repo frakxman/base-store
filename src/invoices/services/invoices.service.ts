@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateInvoiceDto } from '../dto/create-invoice.dto';
-import { UpdateInvoiceDto } from '../dto/update-invoice.dto';
+import { CreateInvoiceDto } from '../dtos/create-invoice.dto';
+import { UpdateInvoiceDto } from '../dtos/update-invoice.dto';
 
 import { Invoice } from '../entities/invoice.entity';
 import { Product } from '../../products/entities/product.entity';
