@@ -6,6 +6,6 @@ import { InvoiceUseCase } from './use-cases/invoice.use-case';
 @Module({
   controllers: [InvoicesController],
   providers: [InvoicesService, InvoiceUseCase],
-
+  exports: [InvoicesService],
 })
 export class InvoicesModule {}

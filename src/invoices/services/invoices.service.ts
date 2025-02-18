@@ -3,6 +3,7 @@ import { CreateInvoiceDto } from '../dto/create-invoice.dto';
 import { UpdateInvoiceDto } from '../dto/update-invoice.dto';
 
 import { Invoice } from '../entities/invoice.entity';
+import { Product } from '../../products/entities/product.entity';
 
 @Injectable()
 export class InvoicesService {
@@ -11,9 +12,32 @@ export class InvoicesService {
       id: '1',
       user_id: '1',
       products: [
-        'https://picsum.photos/640/640?r=1',
-        'https://picsum.photos/640/640?r=2',
-        'https://picsum.photos/640/640?r=3'
+        {
+          id: '1',
+          name: 'Product 1',
+          price: 100,
+          description: 'Description 1',
+          images: [
+            'https://picsum.photos/640/640?r=1',
+            'https://picsum.photos/640/640?r=2',
+            'https://picsum.photos/640/640?r=3'
+          ],
+          stock: 10,
+          status: true,
+        },
+        {
+          id: '2',
+          name: 'Product 2',
+          price: 200,
+          description: 'Description 2',
+          images: [
+            'https://picsum.photos/640/640?r=4',
+            'https://picsum.photos/640/640?r=5',
+            'https://picsum.photos/640/640?r=6'
+          ],
+          stock: 20,
+          status: true,
+        }
       ],
       total: 100,
       date: new Date(),
@@ -22,9 +46,32 @@ export class InvoicesService {
       id: '2',
       user_id: '2',
       products: [
-        'https://picsum.photos/640/640?r=4',
-        'https://picsum.photos/640/640?r=5',
-        'https://picsum.photos/640/640?r=6'
+        {
+          id: '1',
+          name: 'Product 1',
+          price: 100,
+          description: 'Description 1',
+          images: [
+            'https://picsum.photos/640/640?r=1',
+            'https://picsum.photos/640/640?r=2',
+            'https://picsum.photos/640/640?r=3'
+          ],
+          stock: 10,
+          status: true,
+        },
+        {
+          id: '2',
+          name: 'Product 2',
+          price: 200,
+          description: 'Description 2',
+          images: [
+            'https://picsum.photos/640/640?r=4',
+            'https://picsum.photos/640/640?r=5',
+            'https://picsum.photos/640/640?r=6'
+          ],
+          stock: 20,
+          status: true,
+        }
       ],
       total: 200,
       date: new Date(),
@@ -33,11 +80,102 @@ export class InvoicesService {
       id: '3',
       user_id: '3',
       products: [
-        'https://picsum.photos/640/640?r=7',
-        'https://picsum.photos/640/640?r=8',
-        'https://picsum.photos/640/640?r=9'
+        {
+          id: '1',
+          name: 'Product 1',
+          price: 100,
+          description: 'Description 1',
+          images: [
+            'https://picsum.photos/640/640?r=1',
+            'https://picsum.photos/640/640?r=2',
+            'https://picsum.photos/640/640?r=3'
+          ],
+          stock: 10,
+          status: true,
+        },
+        {
+          id: '2',
+          name: 'Product 2',
+          price: 200,
+          description: 'Description 2',
+          images: [
+            'https://picsum.photos/640/640?r=4',
+            'https://picsum.photos/640/640?r=5',
+            'https://picsum.photos/640/640?r=6'
+          ],
+          stock: 20,
+          status: true,
+        }
       ],
       total: 300,
+      date: new Date(),
+    },
+    {
+      id: '4',
+      user_id: '1',
+      products: [
+        {
+          id: '1',
+          name: 'Product 1',
+          price: 100,
+          description: 'Description 1',
+          images: [
+            'https://picsum.photos/640/640?r=1',
+            'https://picsum.photos/640/640?r=2',
+            'https://picsum.photos/640/640?r=3'
+          ],
+          stock: 10,
+          status: true,
+        },
+        {
+          id: '2',
+          name: 'Product 2',
+          price: 200,
+          description: 'Description 2',
+          images: [
+            'https://picsum.photos/640/640?r=4',
+            'https://picsum.photos/640/640?r=5',
+            'https://picsum.photos/640/640?r=6'
+          ],
+          stock: 20,
+          status: true,
+        }
+      ],
+      total: 100,
+      date: new Date(),
+    },
+    {
+      id: '5',
+      user_id: '1',
+      products: [
+        {
+          id: '1',
+          name: 'Product 1',
+          price: 100,
+          description: 'Description 1',
+          images: [
+            'https://picsum.photos/640/640?r=1',
+            'https://picsum.photos/640/640?r=2',
+            'https://picsum.photos/640/640?r=3'
+          ],
+          stock: 10,
+          status: true,
+        },
+        {
+          id: '2',
+          name: 'Product 2',
+          price: 200,
+          description: 'Description 2',
+          images: [
+            'https://picsum.photos/640/640?r=4',
+            'https://picsum.photos/640/640?r=5',
+            'https://picsum.photos/640/640?r=6'
+          ],
+          stock: 20,
+          status: true,
+        }
+      ],
+      total: 100,
       date: new Date(),
     },
   ];
@@ -45,13 +183,14 @@ export class InvoicesService {
   create(createInvoiceDto: CreateInvoiceDto) {
     const id = this.invoices.length + 1;
     const invoice: Invoice = {
-      id: id.toString(),
       ...createInvoiceDto,
+      id: id.toString(),
+      products: createInvoiceDto.products as unknown as Product[],
     };
     this.invoices.push(invoice);
     return {
       message: 'Invoice created successfully',
-      invoices: this.invoices,
+      invoice,
       status: HttpStatus.CREATED,
     };
   }

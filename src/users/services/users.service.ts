@@ -5,6 +5,8 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 
 import { User } from '../entities/user.entity';
 
+import { InvoicesService } from '../../invoices/services/invoices.service';
+
 @Injectable()
 export class UsersService {
   private users: User[] = [
@@ -23,6 +25,8 @@ export class UsersService {
       role: 'user',
     },
   ];
+
+  constructor(private readonly invoicesService: InvoicesService) {}
 
   create(createUserDto: CreateUserDto) {
     const id = this.users.length + 1;
@@ -62,13 +66,19 @@ export class UsersService {
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.findOne(id);
-    if (!user) {
+    const userIndex = this.users.findIndex((user) => user.id === id);
+    if (userIndex === -1) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+    
+    this.users[userIndex] = {
+      ...this.users[userIndex],
+      ...updateUserDto,
+    };
+
     return {
       message: 'User updated successfully',
-      user: updateUserDto,
+      user: this.users[userIndex],
     };
   }
 
@@ -82,14 +92,20 @@ export class UsersService {
       message: 'User deleted successfully',
     };
   }
+
   getUserInvoices(id: string) {
     const user = this.findOne(id);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+
+    const { invoices } = this.invoicesService.findAll();
+    const userInvoices = invoices.filter(invoice => invoice.user_id === id);
     return {
       message: 'User invoices fetched successfully',
-      user: user.user,
+      invoices: userInvoices,
+      status: HttpStatus.OK,
     };
   }
 }
+
