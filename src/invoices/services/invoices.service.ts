@@ -181,19 +181,30 @@ export class InvoicesService {
   ];
 
   create(createInvoiceDto: CreateInvoiceDto) {
-    const id = this.invoices.length + 1;
+    if (!createInvoiceDto.products || createInvoiceDto.products.length === 0) {
+      throw new HttpException('Invoice must have at least one product', HttpStatus.BAD_REQUEST);
+    }
+  
+    const id = (this.invoices.length + 1).toString();
+    
+    const total = createInvoiceDto.products.reduce((acc, product) => acc + product.price, 0);
+    
     const invoice: Invoice = {
+      id,
       ...createInvoiceDto,
-      id: id.toString(),
-      products: createInvoiceDto.products as unknown as Product[],
+      total,
+      date: new Date(), 
     };
+  
     this.invoices.push(invoice);
+    
     return {
       message: 'Invoice created successfully',
       invoice,
       status: HttpStatus.CREATED,
     };
   }
+  
 
   findAll() {
     if (this.invoices.length === 0) {
@@ -218,16 +229,32 @@ export class InvoicesService {
   }
 
   update(id: string, updateInvoiceDto: UpdateInvoiceDto) {
-    const invoice = this.findOne(id);
-    if (!invoice) {
+    const invoiceIndex = this.invoices.findIndex((inv) => inv.id === id);
+    
+    if (invoiceIndex === -1) {
       throw new HttpException('Invoice not found', HttpStatus.NOT_FOUND);
     }
+  
+    const existingInvoice = this.invoices[invoiceIndex];
+    
+    // Actualizar los datos de la factura, permitiendo modificar productos
+    const updatedInvoice: Invoice = {
+      ...existingInvoice,
+      ...updateInvoiceDto,
+      products: updateInvoiceDto.products ?? existingInvoice.products,
+      total: updateInvoiceDto.products
+        ? updateInvoiceDto.products.reduce((acc, product) => acc + product.price, 0)
+        : existingInvoice.total,
+    };
+    
+    this.invoices[invoiceIndex] = updatedInvoice;
+  
     return {
       message: 'Invoice updated successfully',
-      invoice: updateInvoiceDto,
+      invoice: updatedInvoice,
     };
   }
-
+  
   remove(id: string) {  
     const invoice = this.findOne(id);
     if (!invoice) {
@@ -236,7 +263,7 @@ export class InvoicesService {
     this.invoices = this.invoices.filter((invoice) => invoice.id !== id);
     return {
       message: 'Invoice deleted successfully',
-      invoices: this.invoices,
+      invoice,
     };
   }
 }

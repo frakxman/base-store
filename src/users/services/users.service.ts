@@ -24,6 +24,7 @@ export class UsersService {
       password: 'password',
       role: 'user',
     },
+
   ];
 
   constructor(private readonly invoicesService: InvoicesService) {}
