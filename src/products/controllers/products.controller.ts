@@ -11,14 +11,6 @@ import { ProductUseCase } from '../use-cases/products.use-case';
 export class ProductsController {
   constructor(private readonly productUseCase: ProductUseCase) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new product' })
-  @ApiBody({ type: CreateProductDto })
-  @ApiResponse({ status: 201, description: 'Product created successfully' })
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productUseCase.createProduct(createProductDto);
-  }
-
   @Get()
   @ApiOperation({ summary: 'Get all products' })
   @ApiResponse({ status: 200, description: 'All products obtained successfully' })
@@ -33,18 +25,26 @@ export class ProductsController {
     return this.productUseCase.getProductById(id);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update a product by its ID' })
-  @ApiBody({ type: UpdateProductDto })
-  @ApiResponse({ status: 200, description: 'Product updated successfully' })
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productUseCase.updateProduct(id, updateProductDto);
-  }
+  // @Post()
+  // @ApiOperation({ summary: 'Create a new product' })
+  // @ApiBody({ type: CreateProductDto })
+  // @ApiResponse({ status: 201, description: 'Product created successfully' })
+  // create(@Body() createProductDto: CreateProductDto) {
+  //   return this.productUseCase.createProduct(createProductDto);
+  // }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete a product by its ID' })
-  @ApiResponse({ status: 200, description: 'Product deleted successfully' })
-  remove(@Param('id') id: string) {
-    return this.productUseCase.deleteProduct(id);
-  }
+  // @Patch(':id')
+  // @ApiOperation({ summary: 'Update a product by its ID' })
+  // @ApiBody({ type: UpdateProductDto })
+  // @ApiResponse({ status: 200, description: 'Product updated successfully' })
+  // update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  //   return this.productUseCase.updateProduct(id, updateProductDto);
+  // }
+
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete a product by its ID' })
+  // @ApiResponse({ status: 200, description: 'Product deleted successfully' })
+  // remove(@Param('id') id: string) {
+  //   return this.productUseCase.deleteProduct(id);
+  // }
 }
