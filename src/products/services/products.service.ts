@@ -84,14 +84,10 @@ export class ProductsService {
     };
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    const product = this.productModel.findByIdAndUpdate(id, { $set: updateProductDto }, { new: true }).exec();
-    if (!product) {
-      throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
-    }
+  async update(id: string, updateProductDto: UpdateProductDto) {
     return {
       message: 'Product updated successfully',
-      product,
+      product: await this.productModel.findByIdAndUpdate(id, { $set: updateProductDto }, { new: true }).exec(),
       status: HttpStatus.OK,
     };
   }

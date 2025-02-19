@@ -5,6 +5,7 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 
 import { UserUseCase } from '../use-cases/user.use-case';
+import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 
 
 @ApiTags('Users')
@@ -30,7 +31,7 @@ export class UsersController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by its ID' })
   @ApiResponse({ status: 200, description: 'User obtained successfully' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', MongoIdPipe) id: string) {
     return this.userUseCase.getUserById(id);
   }
 
@@ -38,14 +39,14 @@ export class UsersController {
   @ApiOperation({ summary: 'Update a user by its ID' })
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id', MongoIdPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userUseCase.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user by its ID' })
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', MongoIdPipe) id: string) {
     return this.userUseCase.deleteUser(id);
   }
 

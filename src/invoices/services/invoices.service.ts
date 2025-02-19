@@ -210,7 +210,14 @@ export class InvoicesService {
   }
 
   async create(createInvoiceDto: CreateInvoiceDto) {
-    const invoice = new this.invoiceModel(createInvoiceDto);
+    const total = createInvoiceDto.products.reduce((acc, product) => acc + product.price, 0);
+
+    const invoice = new this.invoiceModel({
+      ...createInvoiceDto,
+      total,
+      date: new Date(),
+    });
+
     await invoice.save();
     return {
       message: 'Invoice created successfully',
@@ -220,28 +227,22 @@ export class InvoicesService {
   }
 
   async update(id: string, updateInvoiceDto: UpdateInvoiceDto) {
-    const invoice = await this.findOne(id);
-    if (!invoice) {
-      throw new HttpException('Invoice not found', HttpStatus.NOT_FOUND);
-    }
-  
-    // const existingInvoice = invoice;
-    
-    // // Actualizar los datos de la factura, permitiendo modificar productos
-    // const updatedInvoice: Invoice = {
-    //   ...existingInvoice,
-    //   ...updateInvoiceDto,
-    //   products: updateInvoiceDto.products ?? existingInvoice.products,
-    //   total: updateInvoiceDto.products
-    //     ? updateInvoiceDto.products.reduce((acc, product) => acc + product.price, 0)
-    //     : existingInvoice.total,
-    // };
-    
-    // this.invoices[invoiceIndex] = updatedInvoice;
-  
+    const { invoice } = await this.findOne(id); 
+
+    const updatedInvoiceData = {
+      ...invoice.toObject(), 
+      ...updateInvoiceDto,
+      products: updateInvoiceDto.products ?? invoice.products,
+      total: updateInvoiceDto.products
+        ? updateInvoiceDto.products.reduce((acc, product) => acc + product.price, 0)
+        : invoice.total,
+    };
+
+    const updatedInvoice = await this.invoiceModel.findByIdAndUpdate(id, updatedInvoiceData, { new: true }).exec();
+
     return {
       message: 'Invoice updated successfully',
-      invoice,
+      invoice: updatedInvoice,
       status: HttpStatus.OK,
     };
   }

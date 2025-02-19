@@ -21,15 +21,15 @@ export class ProductUseCase {
     return product;
   }
 
-  // async createProduct(createProductDto: CreateProductDto) {
-  //   return await this.productsService.create(createProductDto);
-  // }
+  async createProduct(createProductDto: CreateProductDto) {
+    return await this.productsService.create(createProductDto);
+  }
 
-  // async updateProduct(id: string, updateProductDto: UpdateProductDto) {
-  //   return await this.productsService.update(id, updateProductDto);
-  // }
+  async updateProduct(id: string, updateProductDto: UpdateProductDto) {
+    return await this.productsService.update(id, updateProductDto);
+  }
 
-  // async deleteProduct(id: string) {
-  //   return await this.productsService.remove(id);
-  // }
+  async deleteProduct(id: string) {
+    return await this.productsService.remove(id);
+  }
 }

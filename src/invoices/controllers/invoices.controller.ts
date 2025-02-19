@@ -5,6 +5,7 @@ import { CreateInvoiceDto } from '../dtos/create-invoice.dto';
 import { UpdateInvoiceDto } from '../dtos/update-invoice.dto';
 
 import { InvoiceUseCase } from '../use-cases/invoice.use-case';
+import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 
 @ApiTags('Invoices')
 @Controller('invoices')
@@ -29,7 +30,7 @@ export class InvoicesController {
   @Get(':id')
   @ApiOperation({ summary: 'Get an invoice by its ID' })
   @ApiResponse({ status: 200, description: 'Invoice obtained successfully' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', MongoIdPipe) id: string) {
     return this.invoiceUseCase.getInvoiceById(id);
   }
 
@@ -37,14 +38,14 @@ export class InvoicesController {
   @ApiOperation({ summary: 'Update an invoice by its ID' })
   @ApiBody({ type: UpdateInvoiceDto })
   @ApiResponse({ status: 200, description: 'Invoice updated successfully' })
-  update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
+  update(@Param('id', MongoIdPipe) id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
     return this.invoiceUseCase.updateInvoice(id, updateInvoiceDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an invoice by its ID' })
   @ApiResponse({ status: 200, description: 'Invoice deleted successfully' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', MongoIdPipe) id: string) {
     return this.invoiceUseCase.deleteInvoice(id);
   }
 }
