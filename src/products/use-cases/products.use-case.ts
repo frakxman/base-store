@@ -2,9 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { ProductsService } from '../services/products.service';
 
-import { CreateProductDto } from '../dtos/create-product.dto';
-import { UpdateProductDto } from '../dtos/update-product.dto';
-
 @Injectable()
 export class ProductUseCase {
   /**
@@ -37,8 +34,9 @@ export class ProductUseCase {
    * @param createProductDto - The data transfer object containing product details.
    * @returns A promise that resolves to the created product.
    */
-  async createProduct(createProductDto: CreateProductDto) {
-    return await this.productsService.create(createProductDto);
+  async createProduct({ name, description, price, stock, images, status, quantity }) {
+    const product = await this.productsService.create({ name, description, price, stock, images, status, quantity });
+    return product;
   }
 
   /**
@@ -47,8 +45,8 @@ export class ProductUseCase {
    * @param updateProductDto - The data transfer object containing updated product details.
    * @returns A promise that resolves to the updated product.
    */
-  async updateProduct(id: string, updateProductDto: UpdateProductDto) {
-    return await this.productsService.update(id, updateProductDto);
+  async updateProduct(id: string, { name, description, price, stock, images, status, quantity }) {
+    return await this.productsService.update(id, { name, description, price, stock, images, status, quantity });
   }
 
   /**

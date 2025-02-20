@@ -2,9 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { CreateProductDto } from '../dtos/create-product.dto';
-import { UpdateProductDto } from '../dtos/update-product.dto';
-
 import { Product } from '../entities/product.entity';
 
 @Injectable()
@@ -20,7 +17,7 @@ export class ProductsService {
    * @returns A promise that resolves to an array of products.
    * @throws HttpException if products are not found.
    */
-  async findAll() {
+  async findAll(): Promise<Product[]> {
     try {
       const products = await this.productModel.find().exec();
       return products;
@@ -46,31 +43,45 @@ export class ProductsService {
 
   /**
    * Creates a new product.
-   * @param createProductDto - The data transfer object containing product details.
-   * @returns A promise that resolves to an object containing a success message, the created product, and the status code.
+   * @param name - The name of the product.
+   * @param description - The description of the product.
+   * @param price - The price of the product.
+   * @param stock - The stock of the product.
+   * @param images - The images of the product.
+   * @param status - The status of the product.
+   * @param quantity - The quantity of the product.
+   * @returns A promise that resolves to the created product.
+   * @throws HttpException if the product is not created.
    */
-  async create(createProductDto: CreateProductDto) { 
-    const product = new this.productModel(createProductDto);
-    await product.save();
-    return {
-      message: 'Product created successfully',
-      product,
-      status: HttpStatus.CREATED,
-    };
+  async create({ name, description, price, stock, images, status, quantity }) { 
+    try { 
+      const product = new this.productModel({ name, description, price, stock, images, status, quantity });
+      await product.save();
+      return product;
+    } catch (error) {
+      throw new HttpException('Product not created', HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**
    * Updates an existing product.
    * @param id - The ID of the product to update.
-   * @param updateProductDto - The data transfer object containing updated product details.
+   * @param name - The name of the product.
+   * @param description - The description of the product.
+   * @param price - The price of the product.
+   * @param stock - The stock of the product.
+   * @param images - The images of the product.
+   * @param status - The status of the product.
+   * @param quantity - The quantity of the product.
    * @returns A promise that resolves to an object containing a success message, the updated product, and the status code.
    */
-  async update(id: string, updateProductDto: UpdateProductDto) {
-    return {
-      message: 'Product updated successfully',
-      product: await this.productModel.findByIdAndUpdate(id, { $set: updateProductDto }, { new: true }).exec(),
-      status: HttpStatus.OK,
-    };
+  async update(id: string, { name, description, price, stock, images, status, quantity }) {
+    try {
+      const product = await this.productModel.findByIdAndUpdate(id, { $set: { name, description, price, stock, images, status, quantity } }, { new: true }).exec();
+      return product;
+    } catch (error) {
+      throw new HttpException('Product not updated', HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**
@@ -80,13 +91,11 @@ export class ProductsService {
    * @throws HttpException if the product is not found.
    */
   remove(id: string) {
-    const product = this.productModel.findByIdAndDelete(id).exec();
-    if (!product) {
+    try {
+      const product = this.productModel.findByIdAndDelete(id).exec();
+      return product;
+    } catch (error) {
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     }
-    return {
-      message: 'Product removed successfully',
-      status: HttpStatus.OK,
-    };
   }
 }

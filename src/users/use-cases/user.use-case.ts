@@ -5,12 +5,25 @@ import { UpdateUserDto } from "../dtos/update-user.dto";
 
 @Injectable()
 export class UserUseCase {
+  /**
+   * Constructs a new UserUseCase.
+   * @param userService - The user service to use.
+   */
   constructor(private readonly userService: UsersService) {}
 
+  /**
+   * Retrieves all users.
+   * @returns A promise that resolves to an array of users.
+   */
   async getAllUsers() {
     return await this.userService.findAll();
   }
 
+  /**
+   * Retrieves a user by their ID.
+   * @param id - The ID of the user to retrieve.
+   * @returns A promise that resolves to the user.
+   */
   async getUserById(id: string) {
     const user = await this.userService.findOne(id);
     if (!user) {
