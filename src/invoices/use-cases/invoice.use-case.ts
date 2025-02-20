@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InvoicesService } from "../services/invoices.service";
-import { CreateInvoiceDto } from "../dtos/create-invoice.dto";
 
 @Injectable()
 export class InvoiceUseCase {
@@ -31,8 +30,23 @@ export class InvoiceUseCase {
     return invoice;
   }
 
-  async createInvoice(createInvoiceDto: CreateInvoiceDto) {
-    
-    return await this.invoiceService.create(createInvoiceDto);
+  
+  async createInvoice({ user_id, products }) {
+    const productDetails = products.map(product => ({
+      name: product.name,
+      price: product.price,
+      quantity: product.quantity,
+    }));
+
+    const total = productDetails.reduce((acc, product) => acc + product.price * product.quantity, 0);
+
+    const invoiceData = {
+      user_id,
+      products: productDetails,
+      total,
+      date: new Date(),
+    };
+
+    return await this.invoiceService.create(invoiceData);
   }
 }

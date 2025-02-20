@@ -1,7 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsArray, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
-import { Product } from 'src/products/entities/product.entity';
+/**
+ * Represents a product included in the invoice.
+ */
+class ProductDetailDto {
+  @ApiProperty({ description: 'Name of the product' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ description: 'Price of the product' })
+  @IsNotEmpty()
+  price: number;
+
+  @ApiProperty({ description: 'Quantity of the product' })
+  @IsNotEmpty()
+  quantity: number;
+}
 
 export class CreateInvoiceDto {
     @ApiProperty({ description: 'ID of the user that creates the invoice' })
@@ -11,11 +28,7 @@ export class CreateInvoiceDto {
 
     @ApiProperty({ description: 'Products included in the invoice' })
     @IsArray()
-    @IsNotEmpty()
-    products: Product[];
-
-    @ApiProperty({ description: 'Total of the invoice' })
-    @IsNumber()
-    @IsNotEmpty()
-    total: number;
+    @ValidateNested({ each: true })
+    @Type(() => ProductDetailDto)
+    products: ProductDetailDto[];
 }

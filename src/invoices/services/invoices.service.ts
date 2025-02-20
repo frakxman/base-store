@@ -45,23 +45,12 @@ export class InvoicesService {
 
   /**
    * Creates a new invoice.
-   * @param createInvoiceDto - The data transfer object containing invoice details.
+   * @param invoiceData - The data transfer object containing invoice details.
    * @returns A promise that resolves to the created invoice.
    * @throws HttpException if the invoice is not created.
    */
-  async create(createInvoiceDto: CreateInvoiceDto) {
-    try {
-      const total = createInvoiceDto.products.reduce((acc, product) => acc + product.price, 0);
-
-      const invoice = new this.invoiceModel({
-        ...createInvoiceDto,
-        total,
-        date: new Date(),
-      });       
-      await invoice.save();
-      return invoice;
-    } catch (error) {
-      throw new HttpException('Invoice not created', HttpStatus.BAD_REQUEST);
-    }
+  async create(invoiceData: CreateInvoiceDto): Promise<Invoice> {
+    const createdInvoice = new this.invoiceModel(invoiceData);
+    return await createdInvoice.save();
   }
 }
