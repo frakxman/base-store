@@ -9,71 +9,46 @@ import { Product } from '../entities/product.entity';
 
 @Injectable()
 export class ProductsService {
+  /**
+   * Constructs a new ProductsService.
+   * @param productModel - The product model injected by Mongoose.
+   */
   constructor(@InjectModel(Product.name) private productModel: Model<Product>) {}
 
-  // private products: Product[] = [
-  //   {
-  //     id: '1',
-  //     name: 'Product 1',
-  //     price: 100,
-  //     description: 'Description 1',
-  //     images: [
-  //       'https://picsum.photos/640/640?r=1',
-  //       'https://picsum.photos/640/640?r=2',
-  //       'https://picsum.photos/640/640?r=3'
-  //     ],
-  //     stock: 10,
-  //     status: true,
-  //   },
-  //   {
-  //     id: '2',
-  //     name: 'Product 2',
-  //     price: 200,
-  //     description: 'Description 2',
-  //     images: [
-  //       'https://picsum.photos/640/640?r=4',
-  //       'https://picsum.photos/640/640?r=5',
-  //       'https://picsum.photos/640/640?r=6'
-  //     ],
-  //     stock: 20,
-  //     status: true,
-  //   },
-  //   {
-  //     id: '3',
-  //     name: 'Product 3',
-  //     price: 300,
-  //     description: 'Description 3',
-  //     images: [
-  //       'https://picsum.photos/640/640?r=7',
-  //       'https://picsum.photos/640/640?r=8',
-  //       'https://picsum.photos/640/640?r=9'
-  //     ],
-  //     stock: 30,
-  //     status: true,
-  //   },
-  // ];
-
+  /**
+   * Retrieves all products.
+   * @returns A promise that resolves to an array of products.
+   * @throws HttpException if products are not found.
+   */
   async findAll() {
-    const products = await this.productModel.find().exec();
-    return {
-      message: 'Products fetched successfully',
-      products,
-      status: HttpStatus.OK,
-    };
+    try {
+      const products = await this.productModel.find().exec();
+      return products;
+    } catch (error) {
+      throw new HttpException('Products not found', HttpStatus.NOT_FOUND);
+    }
   }
 
+  /**
+   * Retrieves a product by its ID.
+   * @param id - The ID of the product to retrieve.
+   * @returns A promise that resolves to the product.
+   * @throws HttpException if the product is not found.
+   */
   async findOne(id: string) {
-    const product = await this.productModel.findById(id).exec();
-    if (!product) {
+    try {
+      const product = await this.productModel.findById(id).exec();
+      return product;
+    } catch (error) {
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     }
-    return {
-      message: 'Product fetched successfully',
-      product,
-      status: HttpStatus.OK,
-    };
   }
 
+  /**
+   * Creates a new product.
+   * @param createProductDto - The data transfer object containing product details.
+   * @returns A promise that resolves to an object containing a success message, the created product, and the status code.
+   */
   async create(createProductDto: CreateProductDto) { 
     const product = new this.productModel(createProductDto);
     await product.save();
@@ -84,6 +59,12 @@ export class ProductsService {
     };
   }
 
+  /**
+   * Updates an existing product.
+   * @param id - The ID of the product to update.
+   * @param updateProductDto - The data transfer object containing updated product details.
+   * @returns A promise that resolves to an object containing a success message, the updated product, and the status code.
+   */
   async update(id: string, updateProductDto: UpdateProductDto) {
     return {
       message: 'Product updated successfully',
@@ -92,6 +73,12 @@ export class ProductsService {
     };
   }
 
+  /**
+   * Removes a product by its ID.
+   * @param id - The ID of the product to remove.
+   * @returns An object containing a success message and the status code.
+   * @throws HttpException if the product is not found.
+   */
   remove(id: string) {
     const product = this.productModel.findByIdAndDelete(id).exec();
     if (!product) {

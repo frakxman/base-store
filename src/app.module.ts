@@ -11,6 +11,7 @@ import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 
 import { environments } from './enviroments';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 
 @Module({
@@ -28,7 +29,7 @@ import config from './config';
     DatabaseModule,
     InvoicesModule, 
     ProductsModule, 
-    UsersModule
+    UsersModule, AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 
 import { CreateUserDto } from '../dtos/create-user.dto';
@@ -7,12 +7,15 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UserUseCase } from '../use-cases/user.use-case';
 import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 
+import { ApiKeyGuard } from 'src/auth/guards/api-key.guard';
+
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly userUseCase: UserUseCase) {}
 
+  @UseGuards(ApiKeyGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
   @ApiBody({ type: CreateUserDto })

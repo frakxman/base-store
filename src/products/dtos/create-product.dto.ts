@@ -32,4 +32,10 @@ export class CreateProductDto {
   @ApiProperty({ description: 'The status of the product' })
   @IsBoolean()
   status: boolean;
+
+  @ApiProperty({ description: 'The quantity of the product' })
+  @IsNumber()
+  @IsNotEmpty()
+  @IsPositive()
+  quantity: number;
 }
