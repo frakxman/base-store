@@ -53,10 +53,10 @@ export class UsersController {
     return this.userUseCase.deleteUser(id);
   }
 
-  // @Get(':id/invoices')
-  // @ApiOperation({ summary: 'Get all invoices of a user' })
-  // @ApiResponse({ status: 200, description: 'All invoices obtained successfully' })
-  // getUserInvoices(@Param('id') id: string) {
-  //   return this.userUseCase.getUserInvoices(id);
-  // }
+  @Get(':id/invoices')
+  @ApiOperation({ summary: 'Get all invoices of a user' })
+  @ApiResponse({ status: 200, description: 'All invoices obtained successfully' })
+  getUserInvoices(@Param('id') id: string) {
+    return this.userUseCase.getUserInvoices(id);
+  }
 }

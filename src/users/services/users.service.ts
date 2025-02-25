@@ -26,7 +26,6 @@ export class UsersService {
   //     password: 'password',
   //     role: 'user',
   //   },
-
   // ];
 
   /**
@@ -112,19 +111,26 @@ export class UsersService {
     }
   }
 
-  // getUserInvoices(id: string) {
-  //   const user = this.findOne(id);
-  //   if (!user) {
-  //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-  //   }
-
-  //   const { invoices } = this.invoicesService.findAll();
-  //   const userInvoices = invoices.filter(invoice => invoice.user_id === id);
-  //   return {
-  //     message: 'User invoices fetched successfully',
-  //     invoices: userInvoices,
-  //     status: HttpStatus.OK,
-  //   };
-  // }
+  /**
+   * Retrieves the invoices for a user by their ID.
+   * @param id - The ID of the user to retrieve invoices for.
+   * @returns A promise that resolves to the user's invoices.
+   * @throws HttpException if the user is not found.
+   */
+  async getUserInvoices(id: string) {
+    try {
+      const user = await this.findOne(id);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const invoices = await this.invoicesService.findAll();
+      const userInvoices = invoices.filter(invoice => invoice.user_id === id);
+      return {
+        invoices: userInvoices,
+      };
+    } catch (error) {
+      throw new HttpException('User invoices not found', HttpStatus.NOT_FOUND);   
+    }
+  }
 }
 

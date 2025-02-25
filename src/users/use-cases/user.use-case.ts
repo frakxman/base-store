@@ -44,8 +44,8 @@ export class UserUseCase {
     return await this.userService.remove(id);
   }
 
-  // async getUserInvoices(id: string) {
-  //   return await this.userService.getUserInvoices(id);
-  // }
+  async getUserInvoices(id: string) {
+    return await this.userService.getUserInvoices(id);
+  }
 }
 

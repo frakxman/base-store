@@ -7,7 +7,7 @@ import { UpdateProductDto } from '../dtos/update-product.dto';
 
 import { ProductUseCase } from '../use-cases/products.use-case';
 
-import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
+import { MongoIdPipe } from '../../common/mongo-id/mongo-id.pipe';
 
 @ApiTags('Products')
 @Controller('products')
