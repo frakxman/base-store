@@ -1,7 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { UsersService } from "../services/users.service";
-import { CreateUserDto } from "../dtos/create-user.dto";
-import { UpdateUserDto } from "../dtos/update-user.dto";
 
 @Injectable()
 export class UserUseCase {
@@ -16,7 +14,8 @@ export class UserUseCase {
    * @returns A promise that resolves to an array of users.
    */
   async getAllUsers() {
-    return await this.userService.findAll();
+    const users = await this.userService.findAll();
+    return users;
   }
 
   /**
@@ -32,18 +31,45 @@ export class UserUseCase {
     return user;
   }
 
-  async createUser(createUserDto: CreateUserDto) {
-    return await this.userService.create(createUserDto);
+  /**
+   * @param name - The name of the user.
+   * @param email - The email of the user.
+   * @param password - The password of the user.
+   * @param role - The role of the user.
+   * @returns 
+   */
+  async createUser({ name, email, password, role }) {
+    const user = await this.userService.create({ name, email, password, role });
+    return user;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto) {
-    return await this.userService.update(id, updateUserDto);
+  /**
+   * Updates an existing user.
+   * @param id - The ID of the user to update.
+   * @param name - The name of the user.
+   * @param email - The email of the user.
+   * @param password - The password of the user.
+   * @returns A promise that resolves to the updated user.
+   */
+  async updateUser(id: string, { name, email, password }) {
+    return await this.userService.update(id, { name, email, password });
   }
 
+
+  /**
+   * Deletes a user by their ID.
+   * @param id - The ID of the user to delete.
+   * @returns A promise that resolves to the result of the deletion.
+   */
   async deleteUser(id: string) {
     return await this.userService.remove(id);
   }
 
+  /**
+   * Get user invoices
+   * @param id - The ID of the user to retrieve invoices
+   * @returns A promise that resolves to the user invoices
+   */
   async getUserInvoices(id: string) {
     return await this.userService.getUserInvoices(id);
   }

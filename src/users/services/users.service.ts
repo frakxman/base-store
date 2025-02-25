@@ -2,31 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { UpdateUserDto } from '../dtos/update-user.dto';
-
 import { User } from '../entities/user.entity';
 
 import { InvoicesService } from '../../invoices/services/invoices.service';
 
 @Injectable()
 export class UsersService {
-  // private users: User[] = [
-  //   {
-  //     id: '1',
-  //     name: 'John Doe',
-  //     email: 'john.doe@example.com',
-  //     password: 'password',
-  //     role: 'admin',
-  //   },
-  //   {
-  //     id: '2',
-  //     name: 'Jane Doe',
-  //     email: 'jane.doe@example.com',
-  //     password: 'password',
-  //     role: 'user',
-  //   },
-  // ];
 
   /**
    * Constructs a new UsersService.
@@ -40,7 +21,7 @@ export class UsersService {
    * @returns A promise that resolves to an array of users.
    * @throws HttpException if users are not found.
    */
-  async findAll() {
+  async findAll(): Promise<User[]> {
     try {
       const users = await this.userModel.find().exec();
       return users;
@@ -66,13 +47,16 @@ export class UsersService {
 
   /**
    * Creates a new user.
-   * @param createUserDto - The data transfer object containing user details.
+   * @param name - The name of the user.
+   * @param email - The email of the user.
+   * @param password - The password of the user.
+   * @param role - The role of the user.
    * @returns A promise that resolves to the created user.
    * @throws HttpException if the user is not created.
    */
-  async create(createUserDto: CreateUserDto) {
+  async create({ name, email, password, role }) {
     try {
-      const user = new this.userModel(createUserDto);
+      const user = new this.userModel({ name, email, password, role });
       await user.save();
       return user;
     } catch (error) {
@@ -83,13 +67,15 @@ export class UsersService {
   /**
    * Updates a user by their ID.
    * @param id - The ID of the user to update.
-   * @param updateUserDto - The data transfer object containing user details.
+   * @param name - The name of the user.
+   * @param email - The email of the user.
+   * @param password - The password of the user.
    * @returns A promise that resolves to the updated user.
    * @throws HttpException if the user is not found.
    */
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, { name, email, password }) {
     try {
-      const user = await this.userModel.findByIdAndUpdate(id, { $set: updateUserDto }, { new: true }).exec();
+      const user = await this.userModel.findByIdAndUpdate(id, { $set: { name, email, password } }, { new: true }).exec();
       return user;
     } catch (error) {
       throw new HttpException('User not updated', HttpStatus.BAD_REQUEST);
