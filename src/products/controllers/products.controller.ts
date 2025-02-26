@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, UseGuards, SetMetadata } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 
@@ -9,6 +9,10 @@ import { ProductUseCase } from '../use-cases/products.use-case';
 
 import { MongoIdPipe } from '../../common/mongo-id/mongo-id.pipe';
 
+import { ApiKeyGuard } from '../../auth/guards/api-key.guard';
+import { Public } from '../../auth/decorators/public.decorator';
+
+@UseGuards(ApiKeyGuard)
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
@@ -24,6 +28,7 @@ export class ProductsController {
    * @returns A promise that resolves to the response containing all products.
    */
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all products' })
   @ApiResponse({ status: 200, description: 'All products obtained successfully' })
   async findAll(@Res() res: Response): Promise<Response> {
@@ -38,6 +43,7 @@ export class ProductsController {
    * @returns A promise that resolves to the response containing the product.
    */
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Get a product by its ID' })
   @ApiResponse({ status: 200, description: 'Product obtained successfully' })
   async findOne(@Param('id', MongoIdPipe) id: string, @Res() res: Response): Promise<Response> {

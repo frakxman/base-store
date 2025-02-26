@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
+import * as bcrypt from 'bcrypt';
+
 import { User } from '../entities/user.entity';
 
 import { InvoicesService } from '../../invoices/services/invoices.service';
@@ -57,8 +59,11 @@ export class UsersService {
   async create({ name, email, password, role }) {
     try {
       const user = new this.userModel({ name, email, password, role });
-      await user.save();
-      return user;
+      const hashPassword = await bcrypt.hash(user.password, 10);
+      user.password = hashPassword;
+      const savedUser = await user.save();
+      const { password: _, ...userWithoutPassword } = savedUser.toObject();
+      return userWithoutPassword;
     } catch (error) {
       throw new HttpException('User not created', HttpStatus.BAD_REQUEST);
     }

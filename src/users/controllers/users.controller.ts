@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Response } from 'express';
-
 
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 
 import { UserUseCase } from '../use-cases/user.use-case';
-import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 
+import { MongoIdPipe } from '../../common/mongo-id/mongo-id.pipe';
 
+import { ApiKeyGuard } from '../../auth/guards/api-key.guard';
+import { Public } from '../../auth/decorators/public.decorator';
+
+@UseGuards(ApiKeyGuard)
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
@@ -73,6 +76,7 @@ export class UsersController {
    * @param res - The response object
    * @returns The promise that resolves to the response containing the updated user
    */
+  @Public()
   @Patch(':id')
   @ApiOperation({ summary: 'Update a user by its ID' })
   @ApiBody({ type: UpdateUserDto })

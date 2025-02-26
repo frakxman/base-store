@@ -20,11 +20,11 @@ import config from './config';
       envFilePath: environments[process.env.NODE_ENV || '.env'],
       load: [config],
       isGlobal: true,
-      // validationSchema: Joi.object({
-      //   API_KEY: Joi.string().required(),
-      //   DATABASE_HOST: Joi.string().required(),
-      //   DATABASE_PORT: Joi.number().required(),
-      // }),
+      validationSchema: Joi.object({
+        API_KEY: Joi.string().required(),
+        MONGO_HOST: Joi.string().required(),
+        MONGO_PORT: Joi.number().required(),
+      }),
     }),
     DatabaseModule,
     InvoicesModule, 
