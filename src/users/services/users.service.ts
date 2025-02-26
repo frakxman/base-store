@@ -58,14 +58,62 @@ export class UsersService {
    */
   async create({ name, email, password, role }) {
     try {
-      const user = new this.userModel({ name, email, password, role });
-      const hashPassword = await bcrypt.hash(user.password, 10);
-      user.password = hashPassword;
+      // Primero, verifica que la contraseña no sea undefined o vacía
+      if (!password) {
+        throw new HttpException('Password is required', HttpStatus.BAD_REQUEST);
+      }
+      
+      // Hashea la contraseña antes de crear el modelo
+      const hashPassword = await bcrypt.hash(password, 10);
+      
+      // Crea el usuario con la contraseña ya hasheada
+      const user = new this.userModel({ 
+        name, 
+        email, 
+        password: hashPassword, 
+        role 
+      });
+      
+      // Guarda el usuario
       const savedUser = await user.save();
+      
+      // Verifica que la contraseña se haya guardado
+      if (!savedUser.password) {
+        throw new HttpException('Error saving password', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      
+      // Retorna el usuario sin la contraseña
       const { password: _, ...userWithoutPassword } = savedUser.toObject();
       return userWithoutPassword;
     } catch (error) {
+      // Mejora el manejo de errores para tener más información
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      
+      // Maneja errores de MongoDB/Mongoose (como duplicados)
+      if (error.code === 11000) {
+        throw new HttpException('Email already exists', HttpStatus.CONFLICT);
+      }
+      
+      // Log del error real para debugging
+      console.error('Error creating user:', error);
       throw new HttpException('User not created', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * Find user by their email
+   * @param email - The email of the user.
+   * @returns A promise that resolves to the user.
+   * @throws HttpException if the user is not found.
+   */
+  async findUserByEmail(email: string) {
+    try {
+      const user = this.userModel.findOne({ email }).lean().exec();
+      return user;
+    } catch (error) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
   }
 

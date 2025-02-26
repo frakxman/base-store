@@ -18,5 +18,6 @@ import { InvoicesModule } from 'src/invoices/invoices.module';
   ],
   controllers: [UsersController],
   providers: [UsersService, UserUseCase],
+  exports: [UsersService]
 })
 export class UsersModule {}
