@@ -14,8 +14,8 @@ export class Product {
   images: string[];
   @Prop({ type: Boolean, required: true })
   status: boolean;
-  @Prop({ type: Number, required: true })
-  quantity: number;  
+  @Prop({ type: Number, required: false, default: 1 })
+  quantity: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

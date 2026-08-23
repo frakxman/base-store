@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { UsersService } from '../../users/services/users.service';
 
 @Injectable()
 export class AuthService {
-    constructor( private userService: UsersService) {}
+    constructor(
+      private userService: UsersService,
+      private jwtService: JwtService,
+    ) {}
 
     async validateUser(email: string, password: string): Promise<any> {
-        // Añade logs para depuración
         console.log('Attempting to validate user with email:', email);
         console.log('Password provided:', password ? 'Yes (not showing for security)' : 'No');
         
@@ -38,5 +41,13 @@ export class AuthService {
         }
         
         return null;
+    }
+
+    login(user: any) {
+      const payload = { sub: user._id, email: user.email, role: user.role };
+      return {
+        access_token: this.jwtService.sign(payload),
+        user,
+      };
     }
 }
