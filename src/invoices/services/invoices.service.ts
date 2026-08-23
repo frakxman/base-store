@@ -50,7 +50,8 @@ export class InvoicesService {
    * @throws HttpException if the invoice is not created.
    */
   async create(invoiceData: CreateInvoiceDto): Promise<Invoice> {
-    const createdInvoice = new this.invoiceModel(invoiceData);
+    const total = invoiceData.products.reduce((sum, product) => sum + product.price * product.quantity, 0);
+    const createdInvoice = new this.invoiceModel({ ...invoiceData, total });
     return await createdInvoice.save();
   }
 }

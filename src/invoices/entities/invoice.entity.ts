@@ -4,7 +4,7 @@ import { Document } from "mongoose";
 /**
  * Represents an invoice in the system.
  */
-@Schema()
+@Schema({ toJSON: { virtuals: true }, toObject: { virtuals: true } })
 export class Invoice extends Document {
   /**
    * The ID of the user associated with the invoice.

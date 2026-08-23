@@ -110,8 +110,8 @@ export class UsersService {
    */
   async findUserByEmail(email: string) {
     try {
-      const user = this.userModel.findOne({ email }).lean().exec();
-      return user;
+      const user = await this.userModel.findOne({ email }).exec();
+      return user ? user.toObject() : null;
     } catch (error) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
