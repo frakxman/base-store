@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 
 import { environments } from './enviroments';
 import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
 import config from './config';
 
 @Module({
@@ -29,7 +30,9 @@ import config from './config';
     DatabaseModule,
     InvoicesModule, 
     ProductsModule, 
-    UsersModule, AuthModule
+    UsersModule,
+    AuthModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
