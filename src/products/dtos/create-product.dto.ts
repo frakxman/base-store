@@ -21,7 +21,6 @@ export class CreateProductDto {
   @ApiProperty({ description: 'The stock of the product' })
   @IsNumber()
   @IsNotEmpty()
-  @IsPositive()
   @Min(0)
   stock: number;
 
@@ -39,4 +38,9 @@ export class CreateProductDto {
   @IsPositive()
   @IsOptional()
   quantity: number;
+
+  @ApiProperty({ description: 'The category ID of the product' })
+  @IsString()
+  @IsNotEmpty()
+  categoryId: string;
 }

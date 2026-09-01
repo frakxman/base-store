@@ -68,10 +68,22 @@ export class ProductsController {
   @ApiBody({ type: CreateProductDto })
   @ApiResponse({ status: 201, description: 'Product created successfully' })
   async create(@Body() createProductDto: CreateProductDto, @Res() res: Response): Promise<Response> {
-    const { name, description, price, stock, images, status, quantity } = createProductDto;
-    const product = await this.productUseCase.createProduct({ name, description, price, stock, images, status, quantity });
+  const { name, description, price, stock, images, status, quantity, categoryId } = createProductDto;
+
+  const product = await this.productUseCase.createProduct({
+    name,
+    description,
+    price,
+    stock,
+    images,
+    status,
+    quantity,
+    categoryId
+  });
+
     return res.status(HttpStatus.CREATED).json(product);
   }
+
 
   /**
    * Updates a product by its ID.
@@ -83,6 +95,7 @@ export class ProductsController {
    * @param images - The images of the product.
    * @param status - The status of the product.
    * @param quantity - The quantity of the product.
+   * @param categoryId - The category ID of the product.
    * @param res - The response object.
    * @returns A promise that resolves to the response containing the updated product.
    */
@@ -91,8 +104,8 @@ export class ProductsController {
   @ApiBody({ type: UpdateProductDto })
   @ApiResponse({ status: 200, description: 'Product updated successfully' })
   async update(@Param('id', MongoIdPipe) id: string, @Body() updateProductDto: UpdateProductDto, @Res() res: Response): Promise<Response> {
-    const { name, description, price, stock, images, status, quantity } = updateProductDto;
-    const product = await this.productUseCase.updateProduct(id, { name, description, price, stock, images, status, quantity });
+    const { name, description, price, stock, images, status, quantity, categoryId } = updateProductDto;
+    const product = await this.productUseCase.updateProduct(id, { name, description, price, stock, images, status, quantity, categoryId });
     return res.status(HttpStatus.OK).json(product);
   }
 

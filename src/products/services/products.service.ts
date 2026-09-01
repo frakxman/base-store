@@ -50,12 +50,13 @@ export class ProductsService {
    * @param images - The images of the product.
    * @param status - The status of the product.
    * @param quantity - The quantity of the product.
+   * @param categoryId - The category ID of the product.
    * @returns A promise that resolves to the created product.
    * @throws HttpException if the product is not created.
    */
-  async create({ name, description, price, stock, images, status, quantity }) { 
+  async create({ name, description, price, stock, images, status, quantity, categoryId }) { 
     try { 
-      const product = new this.productModel({ name, description, price, stock, images, status, quantity });
+      const product = new this.productModel({ name, description, price, stock, images, status, quantity, categoryId });
       await product.save();
       return product;
     } catch (error) {
@@ -73,11 +74,12 @@ export class ProductsService {
    * @param images - The images of the product.
    * @param status - The status of the product.
    * @param quantity - The quantity of the product.
+   * @param categoryId - The category ID of the product.
    * @returns A promise that resolves to an object containing a success message, the updated product, and the status code.
    */
-  async update(id: string, { name, description, price, stock, images, status, quantity }) {
+  async update(id: string, { name, description, price, stock, images, status, quantity, categoryId }) {
     try {
-      const product = await this.productModel.findByIdAndUpdate(id, { $set: { name, description, price, stock, images, status, quantity } }, { new: true }).exec();
+      const product = await this.productModel.findByIdAndUpdate(id, { $set: { name, description, price, stock, images, status, quantity, categoryId } }, { new: true }).exec();
       return product;
     } catch (error) {
       throw new HttpException('Product not updated', HttpStatus.BAD_REQUEST);
